@@ -21,9 +21,18 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <form method="POST" action="/urls/login">
+
+    <form method="POST" action="/login">
+      <span>
+        <%= username %>
+      </span>
+
+      <button type='submit'>logout</button>
+    </form>
+
+    <form method="POST" action="/login">
       <input type="text" name="username"> 
-      <button type='submit'>Click here</button>
+      <button type='submit'>Sign in</button>
     </form>
   </nav>
 </header>
