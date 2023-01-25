@@ -25,6 +25,15 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+// Route to get registration page
+app.get("/register", (req, res) => {
+  res.render("register");
+});
+ 
+app.post('/register', (req, res) => {
+  res.send("Registration request")
+})
+
 app.get("/u/:id", (req, res) => {
   // const longURL = ...
   const longURL = urlDatabase[req.params.id]
