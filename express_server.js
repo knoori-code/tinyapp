@@ -25,14 +25,34 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = {
+
+}
+
+// endpoint to handle registration form data
+app.post('/register', (req, res) => {
+  // Generate new user and store info as an object in users object
+  const id = generateRandomString();
+  const email = req.body.email;
+  const password = req.body.password;
+  users[id] = {
+    id,
+    email,
+    password
+  }
+  // console.log(users)
+  // set userid cookie
+  console.log(users)
+  res.cookie('user_id', id);
+  res.redirect("/urls")
+  
+})
+
 // Route to get registration page
 app.get("/register", (req, res) => {
   res.render("register");
 });
  
-app.post('/register', (req, res) => {
-  res.send("Registration request")
-})
 
 app.get("/u/:id", (req, res) => {
   // const longURL = ...
@@ -40,21 +60,22 @@ app.get("/u/:id", (req, res) => {
   res.redirect(longURL);
 });
 
+
 app.get("/urls/new", (req, res) => {
-  const templateVars = {username: req.cookies['username']};
+  const templateVars = {user: users[req.cookies['user_id']]};  // updating cookie values
   res.render("urls_new", templateVars);
 });
 
 
 app.get("/urls/:id", (req, res) => {
-  const templateVars = {id: req.params.id, longURL: urlDatabase[req.params.id], username: req.cookies['username']};
+  const templateVars = {id: req.params.id, longURL: urlDatabase[req.params.id], user: users[req.cookies['user_id']]};
   res.render("urls_show", templateVars);
 })
 
 app.get("/urls", (req, res) => {
   // Testing if username populates in header.
   // console.log(req.cookies['username'])
-  const templateVars = {urls: urlDatabase, username: req.cookies['username']};
+  const templateVars = {urls: urlDatabase, user: users[req.cookies['user_id']]};
   res.render("urls_index", templateVars);
 })
 

@@ -23,10 +23,10 @@
     </div>
 
      <!-- Check if there is a username then dispay username and logout button -->
-    <% if (username) { %>
+    <% if (user) { %>
       <form method="POST" action="/logout">
         <span>
-          <%= username %>
+          <%= user.email %>
         </span>
         <button type='submit'>Logout</button>
       </form>
@@ -36,18 +36,6 @@
         <button type='submit'>Login</button>
       </form>
     <% } %>
-
-    <!-- <form method="POST" action="/login">
-      <span>
-        <%= username %>
-      </span>
-      <button type='submit'>logout</button>
-    </form>
-
-    <form method="POST" action="/login">
-      <input type="text" name="username"> 
-      <button type='submit'>Sign In</button>
-    </form> -->
 
   </nav>
 </header>
