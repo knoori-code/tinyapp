@@ -22,6 +22,11 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+app.post("/urls/login", (req, res) => {
+  res.cookie('username', req.body.username);
+  res.redirect("/urls")
+})
+
 app.post("/urls/:id/delete", (req, res) => {
   // Delete specific key from database
   delete urlDatabase[req.params.id];
