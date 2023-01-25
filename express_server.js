@@ -1,5 +1,6 @@
 const express = require("express");
-const cookieParser = require("cookie-parser")
+const cookieParser = require("cookie-parser");
+const { response } = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 
@@ -26,11 +27,22 @@ const urlDatabase = {
 };
 
 const users = {
+  KVPWs6: { id: 'KVPWs6', email: 'obiwan@gmail.com', password: '22543' }
 
 }
 
 // endpoint to handle registration form data
 app.post('/register', (req, res) => {
+  // check if email or passwords entered are empty string
+  if (!req.body.email || !req.body.password) {
+    return res.send("Status Code: 400 - Please enter an email and password")
+  }
+  for (const user in users) {
+    if (req.body.email === users[user].email) {
+      return res.send("Status Code: 400 - Email already exists")
+    }
+  }
+
   // Generate new user and store info as an object in users object
   const id = generateRandomString();
   const email = req.body.email;
