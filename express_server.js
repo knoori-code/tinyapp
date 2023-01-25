@@ -31,16 +31,24 @@ const users = {
 
 }
 
+const getUserByEmail = function(email) {
+  for (const user in users) {
+    if (email === users[user].email) {
+      return users[user]
+    }
+  }
+  return null
+}
+
 // endpoint to handle registration form data
 app.post('/register', (req, res) => {
   // check if email or passwords entered are empty string
   if (!req.body.email || !req.body.password) {
-    return res.send("Status Code: 400 - Please enter an email and password")
+    return res.status(400).send("Status Code: 400 - Please enter an email and password")
   }
-  for (const user in users) {
-    if (req.body.email === users[user].email) {
-      return res.send("Status Code: 400 - Email already exists")
-    }
+
+  if (getUserByEmail(req.body.email)) {
+    return res.status(400).send("Status Code: 400 - The email already exists.")
   }
 
   // Generate new user and store info as an object in users object
