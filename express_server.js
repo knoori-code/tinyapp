@@ -44,7 +44,7 @@ app.get("/urls/:id", (req, res) => {
 
 app.get("/urls", (req, res) => {
   // Testing if username populates in header.
-  console.log(req.cookies['username'])
+  // console.log(req.cookies['username'])
   const templateVars = {urls: urlDatabase, username: req.cookies['username']};
   res.render("urls_index", templateVars);
 })
@@ -83,6 +83,13 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls")
 })
 
+// logout route
+app.post("/logout", (req, res) => {
+  res.clearCookie('username')
+  res.redirect("/urls")
+})
+
+// Adding to login field and saving cookie
 app.post("/login", (req, res) => {
   res.cookie('username', req.body.username);
   res.redirect("/urls")

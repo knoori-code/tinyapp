@@ -22,17 +22,32 @@
       </div>
     </div>
 
-    <form method="POST" action="/login">
+     <!-- Check if there is a username then dispay username and logout button -->
+    <% if (username) { %>
+      <form method="POST" action="/logout">
+        <span>
+          <%= username %>
+        </span>
+        <button type='submit'>Logout</button>
+      </form>
+    <% } else { %>
+      <form method="POST" action="/login">
+        <input type="text" name="username"> 
+        <button type='submit'>Login</button>
+      </form>
+    <% } %>
+
+    <!-- <form method="POST" action="/login">
       <span>
         <%= username %>
       </span>
-
       <button type='submit'>logout</button>
     </form>
 
     <form method="POST" action="/login">
       <input type="text" name="username"> 
-      <button type='submit'>Sign in</button>
-    </form>
+      <button type='submit'>Sign In</button>
+    </form> -->
+
   </nav>
 </header>
