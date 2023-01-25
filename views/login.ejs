@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
 <header>
 
   
@@ -21,23 +30,9 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <div>
-        <% if (typeof user === 'undefined') { %>
-        <a href="/login">Login</a>
-        <a href="/register">Registration</a>
-        <% } else { %>
-        <form method="POST" action="/logout">
-          <span>
-            <%= user.email %>
-          </span>
-          <button type='submit'>Logout</button>
-        </form>
-        <% } %>
-    </div>
-     <!-- Check if there is a username then dispay username and logout button -->
-    
-    
-     <!-- <% if (user) { %>
+  </nav>
+
+  <% if (typeof user !== 'undefined') { %>
       <form method="POST" action="/logout">
         <span>
           <%= user.email %>
@@ -49,7 +44,19 @@
         <input type="text" name="username"> 
         <button type='submit'>Login</button>
       </form>
-    <% } %> -->
+    <% } %>
 
-  </nav>
 </header>
+
+<body>
+
+  <h1>Login</h1>
+  <form method="POST" action="/login">
+    <p>Email <input type="email" name="email" /> </p>
+    <p>Password <input type="password" name="password" /> </p>
+    <button>Login</button>
+  </form>
+  
+</body>
+
+</html>

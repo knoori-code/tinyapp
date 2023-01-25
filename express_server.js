@@ -68,6 +68,12 @@ app.post('/register', (req, res) => {
   
 })
 
+// New login endpoint which responds with login template
+app.get("/login", (req, res) => {
+  const templateVars = {user: users[req.cookies['user_id']]}
+  res.render("login", templateVars)
+})
+
 // Route to get registration page
 app.get("/register", (req, res) => {
   res.render("register");
@@ -135,13 +141,16 @@ app.post("/urls/:id/delete", (req, res) => {
 
 // logout route
 app.post("/logout", (req, res) => {
-  res.clearCookie('username')
+  res.clearCookie('user_id')  
   res.redirect("/urls")
 })
 
 // Adding to login field and saving cookie
 app.post("/login", (req, res) => {
-  res.cookie('username', req.body.username);
+  const userObj = getUserByEmail(req.body.email)
+  if (userObj) {
+    res.cookie('user_id', userObj.id);
+  }
   res.redirect("/urls")
 })
 
