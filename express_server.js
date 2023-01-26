@@ -21,25 +21,22 @@ function generateRandomString() {
   return newString;
 }
 
-// const urlDatabase = {
-//   "b2xVn2": "http://www.lighthouselabs.ca",
-//   "9sm5xK": "http://www.google.com"
-// };
-
-const urlDatabase = {
-  b6UTxQ: {
-    longURL: "https://www.tsn.ca",
-    userID: "aJ48lW",
-  },
-  i3BoGr: {
-    longURL: "https://www.google.ca",
-    userID: "aJ48lW",
-  },
-};
+const urlDatabase = {};
 
 const users = {
   KVPWs6: { id: 'KVPWs6', email: 'obiwan@gmail.com', password: '22543' }
 
+}
+
+const urlsForUser = (id) => {
+  // for loop, access userID 
+  const result = {};
+  for (let shortURL in urlDatabase) {
+    if (id === urlDatabase[shortURL].userID) {
+      result[shortURL] = urlDatabase[shortURL].longURL;
+    }
+  }
+  return result
 }
 
 // Returns user object
@@ -124,11 +121,27 @@ app.get("/urls/new", (req, res) => {
 
 
 app.get("/urls/:id", (req, res) => {
+  if (!req.cookies['user_id']) {
+    return res.send("You must be logged in")
+  }
+  if (!urlDatabase[req.params.id]) {
+    return res.send("Short URL does not exist")
+  }
+  const userUrls = urlsForUser(req.cookies['user_id'])
+  if (!userUrls[req.params.id]) {
+    return res.send("This URL does not belong to you")
+  }
+
   const templateVars = {id: req.params.id, longURL: urlDatabase[req.params.id].longURL, user: users[req.cookies['user_id']]};
   res.render("urls_show", templateVars);
 })
 
 app.get("/urls", (req, res) => {
+  // if user not logged in, provide error message when trying to access /urls page
+  if (!req.cookies['user_id']) {
+    return res.send("You must be logged in to view URLs")
+  }
+
   const templateVars = {urls: urlDatabase, user: users[req.cookies['user_id']]};
   res.render("urls_index", templateVars);
 })
@@ -159,11 +172,23 @@ app.post("/urls", (req, res) => {
     userID: req.cookies['user_id']
   }
 
-  console.log(urlDatabase)
+  // console.log(urlDatabase)
   res.redirect(`/urls/${id}`)
 });
 
 app.post("/urls/:id", (req, res) => {
+  // Put 3 if conditions here
+  if (!req.cookies['user_id']) {
+    return res.send("You must be logged in")
+  }
+  if (!urlDatabase[req.params.id]) {
+    return res.send("Short URL does not exist")
+  }
+  const userUrls = urlsForUser(req.cookies['user_id'])
+  if (!userUrls[req.params.id]) {
+    return res.send("This URL does not belong to you")
+  }
+
   if (!req.body.longURL) {
     return res.status(400).send("Cannot be empty");
   }
@@ -172,6 +197,18 @@ app.post("/urls/:id", (req, res) => {
 })
 
 app.post("/urls/:id/delete", (req, res) => {
+  // Put 3 if conditions here
+  if (!req.cookies['user_id']) {
+    return res.send("You must be logged in")
+  }
+  if (!urlDatabase[req.params.id]) {
+    return res.send("Short URL does not exist")
+  }
+  const userUrls = urlsForUser(req.cookies['user_id'])
+  if (!userUrls[req.params.id]) {
+    return res.send("This URL does not belong to you")
+  }
+
   // Delete specific key from database
   delete urlDatabase[req.params.id];
   res.redirect("/urls")
