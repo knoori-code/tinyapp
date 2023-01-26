@@ -31,6 +31,7 @@ const users = {
 
 }
 
+// Returns user object
 const getUserByEmail = function(email) {
   for (const user in users) {
     if (email === users[user].email) {
@@ -70,13 +71,12 @@ app.post('/register', (req, res) => {
 
 // New login endpoint which responds with login template
 app.get("/login", (req, res) => {
-  const templateVars = {user: users[req.cookies['user_id']]}
-  res.render("login", templateVars)
+  res.render("login", {user: {}})
 })
 
 // Route to get registration page
 app.get("/register", (req, res) => {
-  res.render("register");
+  res.render("register", {user:{}});
 });
  
 
@@ -99,8 +99,6 @@ app.get("/urls/:id", (req, res) => {
 })
 
 app.get("/urls", (req, res) => {
-  // Testing if username populates in header.
-  // console.log(req.cookies['username'])
   const templateVars = {urls: urlDatabase, user: users[req.cookies['user_id']]};
   res.render("urls_index", templateVars);
 })
@@ -142,19 +140,28 @@ app.post("/urls/:id/delete", (req, res) => {
 // logout route
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id')  
-  res.redirect("/urls")
+  res.redirect("/login")
 })
 
 // Adding to login field and saving cookie
 app.post("/login", (req, res) => {
-  const userObj = getUserByEmail(req.body.email)
-  if (userObj) {
-    res.cookie('user_id', userObj.id);
+  const userObj = getUserByEmail(req.body.email);
+  if (!userObj) {
+    return res.status(403).send("Status Code: 400 - The email does not exist")
   }
-  res.redirect("/urls")
+
+  if (req.body.password !== userObj.password) {
+    return res.status(403).send("Status Code: 400 - The password is incorrect")
+  }
+  res.cookie('user_id', userObj.id);
+  return res.redirect("/urls")
 })
 
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+//   if (userObj) {
+//     if (userObj.password === req.body.password) {
+
+//  }

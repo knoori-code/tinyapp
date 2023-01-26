@@ -22,34 +22,22 @@
       </div>
     </div>
     <div>
-        <% if (typeof user === 'undefined') { %>
-        <a href="/login">Login</a>
-        <a href="/register">Registration</a>
-        <% } else { %>
+        
+        <% if (user.email) { %>
         <form method="POST" action="/logout">
           <span>
             <%= user.email %>
           </span>
           <button type='submit'>Logout</button>
         </form>
-        <% } %>
+        <% } else { %>
+          <a href="/login">Login</a>
+          <a href="/register">Register</a>
+          <% } %>
+
+
     </div>
-     <!-- Check if there is a username then dispay username and logout button -->
     
-    
-     <!-- <% if (user) { %>
-      <form method="POST" action="/logout">
-        <span>
-          <%= user.email %>
-        </span>
-        <button type='submit'>Logout</button>
-      </form>
-    <% } else { %>
-      <form method="POST" action="/login">
-        <input type="text" name="username"> 
-        <button type='submit'>Login</button>
-      </form>
-    <% } %> -->
 
   </nav>
 </header>
