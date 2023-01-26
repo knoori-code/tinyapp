@@ -71,12 +71,22 @@ app.post('/register', (req, res) => {
 
 // New login endpoint which responds with login template
 app.get("/login", (req, res) => {
+  // if logged in, redirect user to urls page
+  if (req.cookies['user_id']) {
+    return res.redirect("/urls")
+  }
+
   const templateVars = {user: users[req.cookies['user_id']]}
   res.render("login", templateVars)
 })
 
 // Route to get registration page
 app.get("/register", (req, res) => {
+  // if logged in, redirect user to urls page
+  if (req.cookies['user_id']) {
+    return res.redirect("/urls")
+  }
+
   const templateVars = {user: users[req.cookies['user_id']]}
   res.render("register", templateVars);
 });
@@ -84,12 +94,21 @@ app.get("/register", (req, res) => {
 
 app.get("/u/:id", (req, res) => {
   // const longURL = ...
+  if (urlDatabase[req.params.id] === undefined) {
+    return res.send("The short url does not exist")
+  }
+
   const longURL = urlDatabase[req.params.id]
   res.redirect(longURL);
 });
 
 
 app.get("/urls/new", (req, res) => {
+  // if not logged in, redirect from urls/new to login page
+  if (!req.cookies['user_id']) {
+    return res.redirect("/login")
+  }
+
   const templateVars = {user: users[req.cookies['user_id']]};  // updating cookie values
   res.render("urls_new", templateVars);
 });
@@ -120,6 +139,11 @@ app.get("/hello", (req, res) => {
 
 
 app.post("/urls", (req, res) => {
+  // if not logged in, responds with HTML message that they cannot shorten urls
+  if (!req.cookies['user_id']) {
+    return res.status(400).send("Cannot shorten URLs if not logged in");
+  }
+
   let id = generateRandomString();
   urlDatabase[id] = req.body.longURL;
   res.redirect(`/urls/${id}`)
@@ -156,9 +180,11 @@ app.post("/login", (req, res) => {
     return res.status(403).send("Status Code: 400 - The password is incorrect")
   }
   res.cookie('user_id', userObj.id);
+  console.log(req.cookies['user_id'])
   return res.redirect("/urls")
 })
 
+console.log(urlDatabase)
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
