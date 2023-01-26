@@ -21,9 +21,20 @@ function generateRandomString() {
   return newString;
 }
 
+// const urlDatabase = {
+//   "b2xVn2": "http://www.lighthouselabs.ca",
+//   "9sm5xK": "http://www.google.com"
+// };
+
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: {
+    longURL: "https://www.tsn.ca",
+    userID: "aJ48lW",
+  },
+  i3BoGr: {
+    longURL: "https://www.google.ca",
+    userID: "aJ48lW",
+  },
 };
 
 const users = {
@@ -61,9 +72,7 @@ app.post('/register', (req, res) => {
     email,
     password
   }
-  // console.log(users)
   // set userid cookie
-  console.log(users)
   res.cookie('user_id', id);
   res.redirect("/urls")
   
@@ -98,7 +107,7 @@ app.get("/u/:id", (req, res) => {
     return res.send("The short url does not exist")
   }
 
-  const longURL = urlDatabase[req.params.id]
+  const longURL = urlDatabase[req.params.id].longURL
   res.redirect(longURL);
 });
 
@@ -115,7 +124,7 @@ app.get("/urls/new", (req, res) => {
 
 
 app.get("/urls/:id", (req, res) => {
-  const templateVars = {id: req.params.id, longURL: urlDatabase[req.params.id], user: users[req.cookies['user_id']]};
+  const templateVars = {id: req.params.id, longURL: urlDatabase[req.params.id].longURL, user: users[req.cookies['user_id']]};
   res.render("urls_show", templateVars);
 })
 
@@ -145,7 +154,12 @@ app.post("/urls", (req, res) => {
   }
 
   let id = generateRandomString();
-  urlDatabase[id] = req.body.longURL;
+  urlDatabase[id] = {
+    longURL: req.body.longURL,
+    userID: req.cookies['user_id']
+  }
+
+  console.log(urlDatabase)
   res.redirect(`/urls/${id}`)
 });
 
@@ -153,7 +167,7 @@ app.post("/urls/:id", (req, res) => {
   if (!req.body.longURL) {
     return res.status(400).send("Cannot be empty");
   }
-  urlDatabase[req.params.id] = req.body.longURL;
+  urlDatabase[req.params.id].longURL = req.body.longURL;
   res.redirect("/urls")
 })
 
@@ -183,8 +197,6 @@ app.post("/login", (req, res) => {
   console.log(req.cookies['user_id'])
   return res.redirect("/urls")
 })
-
-console.log(urlDatabase)
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
