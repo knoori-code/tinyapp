@@ -71,12 +71,14 @@ app.post('/register', (req, res) => {
 
 // New login endpoint which responds with login template
 app.get("/login", (req, res) => {
-  res.render("login", {user: {}})
+  const templateVars = {user: users[req.cookies['user_id']]}
+  res.render("login", templateVars)
 })
 
 // Route to get registration page
 app.get("/register", (req, res) => {
-  res.render("register", {user:{}});
+  const templateVars = {user: users[req.cookies['user_id']]}
+  res.render("register", templateVars);
 });
  
 
@@ -161,7 +163,3 @@ app.post("/login", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-//   if (userObj) {
-//     if (userObj.password === req.body.password) {
-
-//  }

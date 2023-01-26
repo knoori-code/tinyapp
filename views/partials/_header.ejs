@@ -23,10 +23,10 @@
     </div>
     <div>
         
-        <% if (user.email) { %>
+        <% if (user) { %>
         <form method="POST" action="/logout">
           <span>
-            <%= user.email %>
+          logged in as:  <%= user.email %>
           </span>
           <button type='submit'>Logout</button>
         </form>
