@@ -1,5 +1,6 @@
 const express = require("express");
-const cookieParser = require("cookie-parser");
+// const cookieParser = require("cookie-parser");
+const cookieSession = require('cookie-session')
 const { response } = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
@@ -233,7 +234,6 @@ app.post("/login", (req, res) => {
   if (!userObj) {
     return res.status(403).send("Status Code: 400 - The email does not exist")
   }
-  console.log(bcrypt.compareSync(req.body.password, userObj.hashedPassword))
 
   if (!bcrypt.compareSync(req.body.password, userObj.hashedPassword)) {
     return res.send("The password entered is not correct")
