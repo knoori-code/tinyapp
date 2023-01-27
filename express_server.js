@@ -4,6 +4,7 @@ const { response } = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 const bcrypt = require("bcryptjs")
+const getUserByEmail = require("./helper")
 
 app.set('view engine', 'ejs');
 app.use(cookieSession({
@@ -47,16 +48,6 @@ const urlsForUser = (id) => {
   return result
 }
 
-// Returns user object
-const getUserByEmail = function(email) {
-  for (const user in users) {
-    if (email === users[user].email) {
-      return users[user]
-    }
-  }
-  return null
-}
-
 // endpoint to handle registration form data
 app.post('/register', (req, res) => {
   // check if email or passwords entered are empty string
@@ -64,7 +55,7 @@ app.post('/register', (req, res) => {
     return res.status(400).send("Status Code: 400 - Please enter an email and password")
   }
 
-  if (getUserByEmail(req.body.email)) {
+  if (getUserByEmail(req.body.email, users)) {
     return res.status(400).send("Status Code: 400 - The email already exists.")
   }
 
@@ -245,7 +236,7 @@ app.post("/logout", (req, res) => {
 
 // Adding to login field and saving cookie
 app.post("/login", (req, res) => {
-  const userObj = getUserByEmail(req.body.email);
+  const userObj = getUserByEmail(req.body.email, users);
   if (!userObj) {
     return res.status(403).send("Status Code: 400 - The email does not exist")
   }
