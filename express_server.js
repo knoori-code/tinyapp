@@ -2,7 +2,7 @@ const express = require("express");
 const cookieSession = require('cookie-session')
 const { response } = require("express");
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 8080;
 const bcrypt = require("bcryptjs")
 const getUserByEmail = require("./helper")
 
@@ -10,11 +10,8 @@ app.set('view engine', 'ejs');
 app.use(cookieSession({
   name: 'session',
   keys: ["This is a key"],
-
-  // Cookie Options
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
-
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -30,15 +27,9 @@ function generateRandomString() {
 }
 
 const urlDatabase = {};
-
 const users = {};
 
-// {
-//   KVPWs6: { id: 'KVPWs6', email: 'obiwan@gmail.com', password: '22543' }
-// }
-
 const urlsForUser = (id) => {
-  // for loop, access userID 
   const result = {};
   for (let shortURL in urlDatabase) {
     if (id === urlDatabase[shortURL].userID) {
@@ -50,7 +41,6 @@ const urlsForUser = (id) => {
 
 // endpoint to handle registration form data
 app.post('/register', (req, res) => {
-  // check if email or passwords entered are empty string
   if (!req.body.email || !req.body.password) {
     return res.status(400).send("Status Code: 400 - Please enter an email and password")
   }
@@ -72,12 +62,9 @@ app.post('/register', (req, res) => {
     email,
     hashedPassword
   }
-
   // set userid cookie
   req.session.user_id = id
-
   res.redirect("/urls")
-  
 })
 
 // New login endpoint which responds with login template
@@ -99,14 +86,11 @@ app.get("/register", (req, res) => {
   if (id) {
     return res.redirect("/urls")
   }
-
   const templateVars = {user: users[id]}
   res.render("register", templateVars);
 });
  
-
 app.get("/u/:id", (req, res) => {
-  // const longURL = ...
   if (urlDatabase[req.params.id] === undefined) {
     return res.send("The short url does not exist")
   }
@@ -114,7 +98,6 @@ app.get("/u/:id", (req, res) => {
   const longURL = urlDatabase[req.params.id].longURL
   res.redirect(longURL);
 });
-
 
 app.get("/urls/new", (req, res) => {
   // if not logged in, redirect from urls/new to login page
@@ -126,7 +109,6 @@ app.get("/urls/new", (req, res) => {
   const templateVars = {user: users[id]};  // updating cookie values
   res.render("urls_new", templateVars);
 });
-
 
 app.get("/urls/:id", (req, res) => {
   const userId = req.session.user_id
@@ -161,7 +143,6 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
-
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
@@ -169,7 +150,6 @@ app.get("/urls.json", (req, res) => {
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
-
 
 app.post("/urls", (req, res) => {
   // if not logged in, responds with HTML message that they cannot shorten urls
@@ -183,13 +163,10 @@ app.post("/urls", (req, res) => {
     longURL: req.body.longURL,
     userID: userId
   }
-
-  // console.log(urlDatabase)
   res.redirect(`/urls/${id}`)
 });
 
 app.post("/urls/:id", (req, res) => {
-  // Put 3 if conditions here
   const userId = req.session.user_id;
   if (!userId) {
     return res.send("You must be logged in")
@@ -210,7 +187,6 @@ app.post("/urls/:id", (req, res) => {
 })
 
 app.post("/urls/:id/delete", (req, res) => {
-  // Put 3 if conditions here
   const userId = req.session.user_id
   if (!userId) {
     return res.send("You must be logged in")
@@ -228,7 +204,6 @@ app.post("/urls/:id/delete", (req, res) => {
   res.redirect("/urls")
 })
 
-// logout route
 app.post("/logout", (req, res) => {
   req.session = null
   res.redirect("/login")
@@ -244,13 +219,9 @@ app.post("/login", (req, res) => {
   if (!bcrypt.compareSync(req.body.password, userObj.hashedPassword)) {
     return res.send("The password entered is not correct")
   }
-
-  // res.cookie('user_id', userObj.id);
   req.session.user_id = userObj.id
-
   return res.redirect("/urls")
 })
-
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
