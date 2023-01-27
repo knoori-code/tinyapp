@@ -24,10 +24,11 @@ function generateRandomString() {
 
 const urlDatabase = {};
 
-const users = {
-  KVPWs6: { id: 'KVPWs6', email: 'obiwan@gmail.com', password: '22543' }
+const users = {};
 
-}
+// {
+//   KVPWs6: { id: 'KVPWs6', email: 'obiwan@gmail.com', password: '22543' }
+// }
 
 const urlsForUser = (id) => {
   // for loop, access userID 
@@ -74,6 +75,7 @@ app.post('/register', (req, res) => {
     email,
     hashedPassword
   }
+
   // set userid cookie
   res.cookie('user_id', id);
   res.redirect("/urls")
@@ -231,10 +233,12 @@ app.post("/login", (req, res) => {
   if (!userObj) {
     return res.status(403).send("Status Code: 400 - The email does not exist")
   }
+  console.log(bcrypt.compareSync(req.body.password, userObj.hashedPassword))
 
-  if (req.body.password !== userObj.password) {
-    return res.status(403).send("Status Code: 400 - The password is incorrect")
+  if (!bcrypt.compareSync(req.body.password, userObj.hashedPassword)) {
+    return res.send("The password entered is not correct")
   }
+
   res.cookie('user_id', userObj.id);
   console.log(req.cookies['user_id'])
   return res.redirect("/urls")
