@@ -1,7 +1,4 @@
 <header>
-
-  
-
   <nav class="navbar navbar-expand-md navbar-dark bg-success">
     <a class="navbar-brand" href="/urls">TinyApp</a>
     <button
@@ -22,22 +19,15 @@
       </div>
     </div>
     <div>
-        
-        <% if (user) { %>
-        <form method="POST" action="/logout">
-          <span>
-          logged in as:  <%= user.email %>
-          </span>
-          <button type='submit'>Logout</button>
-        </form>
-        <% } else { %>
-          <a href="/login">Login</a>
-          <a href="/register">Register</a>
-          <% } %>
-
-
+      <% if (user) { %>
+      <form method="POST" action="/logout">
+        <span> logged in as: <%= user.email %> </span>
+        <button type="submit">Logout</button>
+      </form>
+      <% } else { %>
+      <a href="/login">Login</a>
+      <a href="/register">Register</a>
+      <% } %>
     </div>
-    
-
   </nav>
 </header>
